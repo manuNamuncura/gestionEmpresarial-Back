@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GetionEmpresarialApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GetionEmpresarialApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GetionEmpresarialApplication.class, args);
+    }
 
 }
