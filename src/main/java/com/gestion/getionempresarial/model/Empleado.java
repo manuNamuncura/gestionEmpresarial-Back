@@ -53,5 +53,5 @@ public class Empleado {
     @JsonIgnoreProperties("empleados")
     private Departamento departamento;
 
-    private boolean activo = true;
+    private Boolean activo = true;
 }
