@@ -1,5 +1,6 @@
 package com.gestion.getionempresarial.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -37,11 +38,19 @@ public class Empleado {
     @NotNull(message = "La fecha de ingreso es obligatorio")
     private LocalDate fechaIngreso;
 
+    @PrePersist
+    protected void onCreate() {
+        if (this.fechaIngreso == null) {
+            this.fechaIngreso = LocalDate.now();
+        }
+    }
+
     @DecimalMin(value = "0.0", inclusive = false, message = "El salario debe ser mayor a 0")
     private BigDecimal salario;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "departamento_id", nullable = false)
+    @JsonIgnoreProperties("empleados")
     private Departamento departamento;
 
     private boolean activo = true;
