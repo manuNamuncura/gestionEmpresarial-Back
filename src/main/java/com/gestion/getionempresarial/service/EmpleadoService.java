@@ -58,4 +58,10 @@ public class EmpleadoService {
         antiguo.setFechaIngreso(nuevo.getFechaIngreso());
         antiguo.setDepartamento(nuevo.getDepartamento());
     }
+
+    @Transactional()
+    public Page<Empleado> buscarEmpleados(String term, Pageable pageable) {
+        return repository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(term, term, pageable);
+    }
+
 }

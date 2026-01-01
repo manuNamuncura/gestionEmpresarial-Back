@@ -22,8 +22,14 @@ public class EmpleadoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Empleado>> getAll(Pageable pageable) {
-        // Solo devolvemos los activos
+    public ResponseEntity<Page<Empleado>> getAll(
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+
+        // Si search no es nulo ni vacío, filtramos; si no, traemos todos los activos
+        if (search != null && !search.trim().isEmpty()) {
+            return ResponseEntity.ok(service.buscarEmpleados(search, pageable));
+        }
         return ResponseEntity.ok(service.listarActivos(pageable));
     }
 
