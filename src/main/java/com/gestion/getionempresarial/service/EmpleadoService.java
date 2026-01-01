@@ -2,12 +2,11 @@ package com.gestion.getionempresarial.service;
 
 import com.gestion.getionempresarial.model.Empleado;
 import com.gestion.getionempresarial.repository.EmpleadoRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 // EmpleadoService.java
@@ -59,9 +58,24 @@ public class EmpleadoService {
         antiguo.setDepartamento(nuevo.getDepartamento());
     }
 
-    @Transactional()
+    @Transactional(readOnly = true)
     public Page<Empleado> buscarEmpleados(String term, Pageable pageable) {
-        return repository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(term, term, pageable);
+        // Es mejor crear un método en el Repository que combine (Nombre OR Email) AND Activo = true
+        return repository.buscarActivosPorTermino(term, pageable);
     }
 
+    @Transactional
+    public Empleado actualizarEmpleado(Long id, Empleado detalles) {
+        Empleado empleadoExistente = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empleado no encontrado por ID: " + id));
+        repository.findByEmail(detalles.getEmail()).ifPresent(e -> {
+            if (!e.getId().equals(id)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email ya está siendo utilizado por otro empleado.");
+
+            }
+        });
+
+        actualizarDatos(empleadoExistente, detalles);
+        return repository.save(empleadoExistente);
+    }
 }

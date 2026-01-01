@@ -38,6 +38,12 @@ public class EmpleadoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardarOActivar(empleado));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Empleado> update(@PathVariable Long id, @RequestBody Empleado detalles) {
+        Empleado actualizado = service.actualizarEmpleado(id, detalles);
+        return ResponseEntity.ok(actualizado);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.borradoLogico(id);
